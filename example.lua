@@ -23,7 +23,7 @@ end
 -- initialize logger object
 logger, err = writelog.new( 
     writelog.DEBUG,
-    'influxdb://128.199.183.111:8086', 
+    'influxdb://127.0.0.1:8086', 
     {
         nonblock = true,
         dbname = 'writelog'
