@@ -29,7 +29,6 @@
 -- assign to local
 local writelog = require('writelog');
 local InetClient = require('net.stream.inet').client;
-local UnixClient = require('net.stream.unix').client;
 local gettimeofday = require('process').gettimeofday;
 local concat = table.concat;
 local getinfo = debug.getinfo;
@@ -196,6 +195,11 @@ local function new( lv, ctx, opts )
         return nil, 'dbname is not set';
     end
 
+    -- check formatter
+    if opts and opts.formatter then
+        return nil, 'Custom formatter is not supported';
+    end
+
     -- set flush method if non-blocking mode
     if opts and opts.nonblock == true then
         ctx.flush = flush;
@@ -211,9 +215,7 @@ local function new( lv, ctx, opts )
         });
     -- unix domain socket
     else
-        ctx.sock, err = UnixClient.new({
-            path = ctx.path
-        });
+        return nil, 'InfluxDB can not use unix domain socket'
     end
 
     if err then
@@ -225,22 +227,6 @@ local function new( lv, ctx, opts )
     ctx.getfd = getfd;
     ctx.close = close;
     ctx.reduce = reduce;
-
-    --[[
-    logger = writelog.create(
-        ctx,
-        lv,
-        sendfn,
-        function( ... )
-            return formatter( ctx, ... );
-        end
-    );
-
-    loggerMetaTable = getmetatable( logger );
-    loggerMetaTable.__index.reduce = not iscallable( reduce ) and NOOP;
-
-    return setmetatable( logger, loggerMetaTable );
-    --]]
 
     return writelog.create(
         ctx,
