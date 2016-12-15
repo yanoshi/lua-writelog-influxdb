@@ -2,7 +2,7 @@ package = "writelog-influxdb"
 version = "0.1.2-1"
 source = {
     url = "git://github.com/yanoshi/lua-writelog-influxdb.git",
-    tag = "0.1.2-1"
+    tag = "0.1.2"
 }
 description = {
     summary = "logger module of writelog using InfluxDB",
